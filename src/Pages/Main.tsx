@@ -9,6 +9,7 @@ import { MdNotificationsNone, MdInfoOutline } from 'react-icons/md';
 import { FiPlus } from 'react-icons/fi';
 import styled from 'styled-components';
 import { TaskList } from '../components/TaskList';
+import { DraggableCanvas } from '../components/Draggable/DraggableCanvas';
 
 
 const StyledFaHome = styled(FaHome)`
@@ -54,6 +55,10 @@ const StyledH2 = styled.h2`
     margin-left: 4px;
 `
 
+const StyledContainer = styled.div`
+    display: flex;
+`
+
 export default (props: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <BackgroundContainer background={img} style={{ width: '100vw', height: '100vh' }}>
@@ -72,7 +77,16 @@ export default (props: React.HTMLAttributes<HTMLDivElement>) => {
                     <StyledMenuButton><StyledMdNotificationsNone/></StyledMenuButton>
                 </MenuGroup>
             </Header>
-            <TaskList></TaskList>
+            <DraggableCanvas
+                grid={[2,1]}
+            >
+                <TaskList title="Backlog">
+                    
+                </TaskList>
+                <TaskList title="Active">
+                    
+                </TaskList>
+            </DraggableCanvas>
         </BackgroundContainer>
     )
 };
