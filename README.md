@@ -1,4 +1,4 @@
-This project was made in [React](https://github.com/facebook/react) with [Typescript](https://github.com/microsoft/TypeScript) and its objective is emulate Trello interface, for me to understand about draggable components in react and how can I use them on my projects.
+This project was made in [React](https://github.com/facebook/react) with [Typescript](https://github.com/microsoft/TypeScript) and its objective was to emulate Trello interface, for me to understand about draggable components in react and how can I use them on my projects.
 
 ## Available Scripts
 

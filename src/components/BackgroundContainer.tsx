@@ -1,4 +1,4 @@
-import * as React from 'react'
+import * as React from 'react';
 import styled from 'styled-components';
 
 interface IBackgroundContainerProps extends React.HTMLAttributes<HTMLDivElement> {

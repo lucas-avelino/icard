@@ -10,6 +10,7 @@ import { FiPlus } from 'react-icons/fi';
 import styled from 'styled-components';
 import { TaskList } from '../components/TaskList';
 import { DraggableCanvas } from '../components/Draggable/DraggableCanvas';
+import { Draggable } from '../components/Draggable/Draggable';
 
 
 const StyledFaHome = styled(FaHome)`
@@ -72,19 +73,20 @@ export default (props: React.HTMLAttributes<HTMLDivElement>) => {
                     <StyledFaTrello /><StyledH2>ICard</StyledH2>
                 </MenuGroup>
                 <MenuGroup>
-                    <MenuButton><StyledFiPlus/></MenuButton>
-                    <MenuButton><StyledFaInfoCircle/></MenuButton>
-                    <StyledMenuButton><StyledMdNotificationsNone/></StyledMenuButton>
+                    <MenuButton><StyledFiPlus /></MenuButton>
+                    <MenuButton><StyledFaInfoCircle /></MenuButton>
+                    <StyledMenuButton><StyledMdNotificationsNone /></StyledMenuButton>
                 </MenuGroup>
             </Header>
-            <DraggableCanvas
-                grid={[2,1]}
-            >
+            <DraggableCanvas>
                 <TaskList title="Backlog">
-                    
+
                 </TaskList>
                 <TaskList title="Active">
-                    
+
+                </TaskList>
+                <TaskList title="Closed">
+
                 </TaskList>
             </DraggableCanvas>
         </BackgroundContainer>
