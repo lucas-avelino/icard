@@ -1,8 +1,9 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import Coord from './Cord';
 
 interface IDraggableProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
-    movementCallback: (p: {
+    movementCallback?: (p: {
         x: number,
         y: number,
         index: number,
@@ -20,6 +21,10 @@ interface IDraggableProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
         onMovement: boolean
     };
     index: number;
+    isInMovement: boolean,
+    setOnMovementElement: any,
+    release: () => any,
+    getPosition: () => Coord;
 }
 
 const StyledDraggable = styled.div<{
@@ -30,77 +35,42 @@ const StyledDraggable = styled.div<{
 `
 
 
-export const Draggable = (props: IDraggableProps) => {
-    const [onMovement, setOnMovement] = React.useState(props && props.state && props.state.onMovement || false);
-    const [position, setPosition] = React.useState(props && props.state && props.state.position || { x: 0, y: 0 });
+export const Draggable = React.memo((props: IDraggableProps) => {
+    
     const [clickPosition, setClickPosition] = React.useState(props && props.state && props.state.clickPosition || { x: 0, y: 0 });
     const [realPosition, setRealPosition] = React.useState(props && props.state && props.state.realPosition || { x: 0, y: 0 });
 
     const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (!onMovement) {
-            setOnMovement(true);
+        if (!props.isInMovement) {
+            props.setOnMovementElement(props.index);
             setClickPosition({ x: e.clientX, y: e.clientY })
         }
     }
 
     const onMouseUp = (e: React.MouseEvent) => {
         console.log("release", realPosition)
-        setOnMovement(false);
-        const boundingClientRect = (e.target as HTMLDivElement).getBoundingClientRect()
+        props.release()
+        // const boundingClientRect = (e.target as HTMLDivElement).getBoundingClientRect()
         setRealPosition(
             {
-                x: realPosition.x + (position.x - clickPosition.x),
-                y: realPosition.y + (position.y - clickPosition.y)
+                x: realPosition.x + (props.getPosition().x - clickPosition.x),
+                y: realPosition.y + (props.getPosition().y - clickPosition.y)
             }
         );
-        setPosition({
-            x: 0,
-            y: 0
-        });
         setClickPosition({
             x: 0,
             y: 0
         })
     }
-    console.log({ realPosition })
-
-
-    React.useEffect(() => {
-        const setFromEvent = (e: MouseEvent) => {
-            if (onMovement) {
-                setPosition({ x: e.clientX, y: e.clientY });
-                props.movementCallback({
-                    x: e.clientX,
-                    y: e.clientY,
-                    index: props.index,
-                    state: {
-                        position: position,
-                        clickPosition: clickPosition,
-                        realPosition: realPosition,
-                        onMovement: onMovement
-                    }
-                })
-            }
-        };
-
-        window.addEventListener("mousemove", setFromEvent);
-
-        return () => {
-            window.removeEventListener("mousemove", setFromEvent);
-        };
-    })
-
-    console.log(realPosition.x + (position.x - clickPosition.x), realPosition.y + (position.y - clickPosition.y))
-
     return (<StyledDraggable
-        style={onMovement ? {
-            top: position.y - 10,
-            left: position.x - 10,
+        style={props.isInMovement ? {
+            top: props.getPosition().y - 10,
+            left: props.getPosition().x - 10,
         } : {}}
-        isInMovement={onMovement}
+        isInMovement={props.isInMovement}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
     >
         {props.children}
     </StyledDraggable>)
-}
+})

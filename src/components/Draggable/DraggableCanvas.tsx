@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import { Draggable } from './Draggable';
+import HashMap from './HashMap';
 
 interface IDraggableCanvasProps extends React.HTMLAttributes<HTMLDivElement> {
     grid?: [number, number]
@@ -27,34 +28,55 @@ const StyledDraggableCanvas = styled.div<{
 `;
 
 export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggableCanvasProps) => {
-    const a = "";
     const [fakePosition, setFakePosition] = React.useState(-1);
+    const [position, setPosition] = React.useState({ x: 0, y: 0 });
+    const [onMovementElement, setOnMovementElement] = React.useState(-1);
+    const [sequence, setSequence] = React.useState({} as HashMap);
 
-    const movement = (p: {
-        x: number,
-        y: number,
-        index: number,
-        state: {
-            position: { x: number, y: number },
-            clickPosition: { x: number, y: number },
-            realPosition: { x: number, y: number },
-            onMovement: boolean
-        }
-    }) => {
-        setFakePosition(Math.floor(p.x / 250))
-    };
 
+    React.useEffect(() => {
+        const setFromEvent = (e: MouseEvent) => {
+            //if (onMovement) {
+                setPosition({ x: e.clientX, y: e.clientY });
+            //}
+        };
+
+        window.addEventListener("mousemove", setFromEvent);
+
+        return () => {
+            window.removeEventListener("mousemove", setFromEvent);
+        };
+    })
+    
+    const getPosition = () => {
+        setFakePosition(Math.floor(position.x / 250))
+        return position;
+    }
+
+    const release = () => {
+        setSequence({...sequence, [onMovementElement]:fakePosition} as HashMap)
+        setFakePosition(-1)
+        setOnMovementElement(-1)
+    }
+    console.log(onMovementElement)
     let children = (props.children as Array<ReactNode>).map((e, i, array) => {
         return (<Draggable
-            movementCallback={movement}
+            //movementCallback={movement}
             index={i}
+            getPosition={getPosition}
+            setOnMovementElement={setOnMovementElement}
+            isInMovement={i === onMovementElement}
+            release={release}
         >
             {e}
         </Draggable>
         )
     })
-    if (fakePosition != -1)
+
+    
+    if (fakePosition !== -1 && onMovementElement !== -1){
         children = [...children.slice(0, fakePosition), <div>teste</div>, ...children.slice(fakePosition)]
+    }
     return (
         <StyledDraggableCanvas grid={[children.length, 1]} {...props}>
             {children}
