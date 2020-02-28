@@ -31,7 +31,7 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
     const [fakePosition, setFakePosition] = React.useState(-1);
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
     const [onMovementElement, setOnMovementElement] = React.useState(-1);
-    const [sequence, setSequence] = React.useState({} as HashMap);
+    // const [sequence, setSequence] = React.useState({} as HashMap);
     const [cards, setCards] = React.useState(props.children as ReactNodeArray);
     // console.log(cards);
     React.useEffect(() => {
@@ -49,26 +49,31 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
     })
 
     const getPosition = () => {
-        setFakePosition(Math.floor(((position.x/2) - 125) / 125)+1)
+        setFakePosition(Math.floor(((position.x / 2) - 175) / 125) + 1)//plot function in desmos to understand the function behavior 
         return position;
     }
 
     const release = () => {
         const cardTemp = [...cards];
         const card = cardTemp[onMovementElement];
-        
-        for (let i = onMovementElement; i <= fakePosition; i++) {
-            if(i == fakePosition){
-                cardTemp[i] = card
-            }else{
-                cardTemp[i] =cardTemp[i+1]
+        if (onMovementElement < fakePosition) {
+            for (let i = onMovementElement; i < fakePosition; i++) {
+                const aux = cardTemp[i];
+                cardTemp[i] = cardTemp[i+1];
+                cardTemp[i+1] = aux;
             }
-
+        } else if (onMovementElement > fakePosition) {
+            for (let i = onMovementElement; i > fakePosition+1; i--) {
+                const aux = cardTemp[i];
+                cardTemp[i] = cardTemp[i-1];
+                cardTemp[i-1] = aux;
+            }
         }
+
         setCards(cardTemp)
 
         // setSequence({...sequence, [onMovementElement]:fakePosition} as HashMap)
-        console.log({ cardTemp,fakePosition });
+        // console.log({ cardTemp, fakePosition });
         setFakePosition(-1)
         setOnMovementElement(-1)
     }
@@ -89,7 +94,7 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
 
 
     if (fakePosition !== -1 && onMovementElement !== -1) {
-        children = [...children.slice(0, fakePosition+1), <div>teste</div>, ...children.slice(fakePosition)]
+        children = [...children.slice(0, fakePosition + 1), <div>teste</div>, ...children.slice(fakePosition)]
     }
     return (
         <StyledDraggableCanvas grid={[children.length, 1]} {...props}>
