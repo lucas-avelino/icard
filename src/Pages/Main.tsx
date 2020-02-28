@@ -79,13 +79,13 @@ export default (props: React.HTMLAttributes<HTMLDivElement>) => {
                 </MenuGroup>
             </Header>
             <DraggableCanvas>
-                <TaskList title="Backlog">
+                <TaskList title="Backlog" key={1}>
 
                 </TaskList>
-                <TaskList title="Active">
+                <TaskList title="Active" key={2}>
 
                 </TaskList>
-                <TaskList title="Closed">
+                <TaskList title="Closed" key={3}>
 
                 </TaskList>
             </DraggableCanvas>

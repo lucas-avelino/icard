@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, ReactNodeArray } from 'react'
 import styled from 'styled-components'
 import { Draggable } from './Draggable';
 import HashMap from './HashMap';
@@ -32,12 +32,12 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
     const [onMovementElement, setOnMovementElement] = React.useState(-1);
     const [sequence, setSequence] = React.useState({} as HashMap);
-
-
+    const [cards, setCards] = React.useState(props.children as ReactNodeArray);
+    // console.log(cards);
     React.useEffect(() => {
         const setFromEvent = (e: MouseEvent) => {
             //if (onMovement) {
-                setPosition({ x: e.clientX, y: e.clientY });
+            setPosition({ x: e.clientX, y: e.clientY });
             //}
         };
 
@@ -47,19 +47,33 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
             window.removeEventListener("mousemove", setFromEvent);
         };
     })
-    
+
     const getPosition = () => {
-        setFakePosition(Math.floor(position.x / 250))
+        setFakePosition(Math.floor(((position.x/2) - 125) / 125)+1)
         return position;
     }
 
     const release = () => {
-        setSequence({...sequence, [onMovementElement]:fakePosition} as HashMap)
+        const cardTemp = [...cards];
+        const card = cardTemp[onMovementElement];
+        
+        for (let i = onMovementElement; i <= fakePosition; i++) {
+            if(i == fakePosition){
+                cardTemp[i] = card
+            }else{
+                cardTemp[i] =cardTemp[i+1]
+            }
+
+        }
+        setCards(cardTemp)
+
+        // setSequence({...sequence, [onMovementElement]:fakePosition} as HashMap)
+        console.log({ cardTemp,fakePosition });
         setFakePosition(-1)
         setOnMovementElement(-1)
     }
     console.log(onMovementElement)
-    let children = (props.children as Array<ReactNode>).map((e, i, array) => {
+    let children = (cards).map((e, i, array) => {
         return (<Draggable
             //movementCallback={movement}
             index={i}
@@ -73,9 +87,9 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
         )
     })
 
-    
-    if (fakePosition !== -1 && onMovementElement !== -1){
-        children = [...children.slice(0, fakePosition), <div>teste</div>, ...children.slice(fakePosition)]
+
+    if (fakePosition !== -1 && onMovementElement !== -1) {
+        children = [...children.slice(0, fakePosition+1), <div>teste</div>, ...children.slice(fakePosition)]
     }
     return (
         <StyledDraggableCanvas grid={[children.length, 1]} {...props}>
