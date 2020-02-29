@@ -22,7 +22,7 @@ interface IDraggableProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
     };
     index: number;
     isInMovement: boolean,
-    setOnMovementElement: any,
+    activeMovement: any,
     release: () => any,
     getPosition: () => Coord;
 }
@@ -31,7 +31,8 @@ const StyledDraggable = styled.div<{
     isInMovement: boolean,
 }>`
     position: ${(props) => props.isInMovement ? 'absolute' : 'relative'};
-
+    height: fit-content;
+    
 `
 
 
@@ -42,13 +43,21 @@ export const Draggable = React.memo((props: IDraggableProps) => {
 
     const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!props.isInMovement) {
-            props.setOnMovementElement(props.index);
+            const getFirstParent:(element :HTMLElement) => HTMLDivElement = (element :HTMLElement) => {
+                if(element.classList.contains("StyledDraggable")){
+                    return element as HTMLDivElement;
+                }else{
+                    return getFirstParent(element.parentElement as HTMLElement) as HTMLDivElement; 
+                }
+            }
+            
+            props.activeMovement(props.index, getFirstParent((e.target as HTMLElement)).getBoundingClientRect().height);
             setClickPosition({ x: e.clientX, y: e.clientY })
         }
     }
 
     const onMouseUp = (e: React.MouseEvent) => {
-        console.log("release", realPosition)
+        // console.log("release", realPosition)
         props.release()
         // const boundingClientRect = (e.target as HTMLDivElement).getBoundingClientRect()
         setRealPosition(
@@ -70,6 +79,7 @@ export const Draggable = React.memo((props: IDraggableProps) => {
         isInMovement={props.isInMovement}
         onMouseDown={onMouseDown}
         onMouseUp={onMouseUp}
+        className={"StyledDraggable"}
     >
         {props.children}
     </StyledDraggable>)

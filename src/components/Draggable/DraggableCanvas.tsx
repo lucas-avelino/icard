@@ -28,18 +28,24 @@ const StyledDraggableCanvas = styled.div<{
     margin: 10px;
 `;
 
+const StyledFakePositionHolder = styled.div<{
+    height: number;
+}>`
+    height: ${(props) => props.height}px;
+    width: 100%;
+    background: rgba(255,255,255,0.5);
+    border-radius: 4px;
+`;
+
 export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggableCanvasProps) => {
     const [fakePosition, setFakePosition] = React.useState(-1);
+    const [heightOfSelectedElement, setHeightOfSelectedElement] = React.useState(-1);
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
     const [onMovementElement, setOnMovementElement] = React.useState(-1);
-    // const [sequence, setSequence] = React.useState({} as HashMap);
     const [cards, setCards] = React.useState(props.children as ReactNodeArray);
-    // console.log(cards);
     React.useEffect(() => {
         const setFromEvent = (e: MouseEvent) => {
-            //if (onMovement) {
             setPosition({ x: e.clientX, y: e.clientY });
-            //}
         };
 
         window.addEventListener("mousemove", setFromEvent);
@@ -50,11 +56,11 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
     })
 
     const getPosition = () => {
-        setFakePosition(() => {
+        //Todo: Fix the relative position function (problems with precision with big values of position)
+        setFakePosition(() => {//plot function in desmos to understand the function behavior 
             const temp = Math.floor(((position.x / 2) - 130) / 130) + 1;
             return temp < 0 ? temp + 1 : temp
-        })//plot function in desmos to understand the function behavior 
-        // console.log("fake", Math.floor(((position.x / 2) - 175) / 125) + 1)
+        })
         return position;
     }
 
@@ -77,13 +83,17 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
         setFakePosition(-1)
         setOnMovementElement(-1)
     }
-    // console.log(onMovementElement)
+    
+    const activeMovement = (index: number, size: number) => {
+        setOnMovementElement(index);
+        setHeightOfSelectedElement(size);
+    }
+
     let children = (cards).map((e, i, array) => {
         return (<Draggable
-            //movementCallback={movement}
             index={i}
             getPosition={getPosition}
-            setOnMovementElement={setOnMovementElement}
+            activeMovement={activeMovement}
             isInMovement={i === onMovementElement}
             release={release}
         >
@@ -95,12 +105,9 @@ export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggab
 
     if (fakePosition !== -1 && onMovementElement !== -1) {
         const card = children[onMovementElement];
-        console.log(fakePosition, children)
         children = children.filter((obj, i) => i != onMovementElement)
-        children.splice(fakePosition, 0, <div>teste</div>);
+        children.splice(fakePosition, 0, <StyledFakePositionHolder height={heightOfSelectedElement}/>);
         children.push(card);
-            
-        console.log(fakePosition, ...children)
     }
     return (
         <StyledDraggableCanvas grid={[children.length, 1]} {...props}>
