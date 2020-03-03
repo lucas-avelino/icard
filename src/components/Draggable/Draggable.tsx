@@ -32,7 +32,7 @@ const StyledDraggable = styled.div<{
 }>`
     position: ${(props) => props.isInMovement ? 'absolute' : 'relative'};
     height: fit-content;
-    
+    cursor: ${(props) => props.isInMovement ? 'grab' : 'pointer'};
 `
 
 
