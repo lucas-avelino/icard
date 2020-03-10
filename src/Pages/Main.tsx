@@ -60,6 +60,8 @@ const StyledContainer = styled.div`
     display: flex;
 `
 
+// const canvas = DraggableCanvas(MenuButton)
+
 export default (props: React.HTMLAttributes<HTMLDivElement>) => {
     return (
         <BackgroundContainer background={img} style={{ width: '100vw', height: '100vh' }}>
@@ -78,6 +80,7 @@ export default (props: React.HTMLAttributes<HTMLDivElement>) => {
                     <StyledMenuButton><StyledMdNotificationsNone /></StyledMenuButton>
                 </MenuGroup>
             </Header>
+
             <DraggableCanvas>
                 <TaskList title="Backlog" key={1}>
 

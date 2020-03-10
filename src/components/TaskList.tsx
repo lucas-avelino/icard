@@ -32,20 +32,13 @@ const StyledTaskList = styled.div<{
 
 
 export const TaskList: React.FC<IPropsTaskList> = (props: IPropsTaskList) => {
-    const [draging, setDragin] = React.useState(false);
-    const onDrag = () => {
-        console.log(draging);
-        setDragin(true)
-    }
 
     return (
         // <Draggable
         //     scale={1}
         //     onDrag={onDrag}
         // >
-            <StyledTaskList
-                draging={draging}
-            >
+            <StyledTaskList>
                 <TaskListHeader title={props.title}></TaskListHeader>
                 <TaskListContainer>
                     <Card>
