@@ -1,0 +1,46 @@
+name: Publish on GH pages
+
+on: 
+  push:
+    branches:    
+      - gh-pages 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: NPM install dependencies
+      run: npm install
+
+    - name: Git set-up
+      run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+    - name: NPM build 
+      run: npm run build
+
+    - name: Git commit builded files
+      run: |
+          git add -f ./dist/* ./index.html 
+          export gitStaged=$(git diff --name-only --cached)
+          if ! grep -q "/" $gitStaged ;
+            then echo "Nothing to commit";
+            else echo "Commiting build changes"\
+              && git commit -m "build: npm added compiled files ~Auto Build Action~" -a;
+          fi;
+    - name: Git push changes
+      uses: lucas-avelino/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB }}
+        branch: gh-pages
+        force: true
