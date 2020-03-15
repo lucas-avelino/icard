@@ -32,8 +32,7 @@ const StyledDraggableCanvas = styled.div<{
 
 
 export const DraggableCanvas: React.FC<IDraggableCanvasProps> = (props: IDraggableCanvasProps) => {
-    const {childList} = useDragCanvas({...props})
-    console.log(props.children)
+    const childList = props.children as Array<Node>
     return (
         <StyledDraggableCanvas grid={[(childList && childList.length) || 1 , 1]} {...props}>
             {childList && childList}

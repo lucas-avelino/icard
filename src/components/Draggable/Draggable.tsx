@@ -4,39 +4,27 @@ import Coord from './Cord';
 import { useDrag } from '../../hooks/useDrag';
 
 interface IDraggableProps extends React.HtmlHTMLAttributes<HTMLDivElement> {
-    state?: {
-        position: { x: number, y: number },
-        clickPosition: { x: number, y: number },
-        realPosition: { x: number, y: number },
-        onMovement: boolean
-    };
-    index: number;
-    isInMovement: boolean,
-    activeMovement: any,
-    release: () => any,
-    getPosition: () => Coord;
+    
 }
 
 const StyledDraggable = styled.div<{
-    isInMovement: boolean,
+    isOnMovement: boolean,
 }>`
-    position: ${(props) => props.isInMovement ? 'absolute' : 'relative'};
+    position: ${(props) => props.isOnMovement ? 'absolute' : 'relative'};
     height: fit-content;
-    cursor: ${(props) => props.isInMovement ? 'grab' : 'pointer'};
+    cursor: ${(props) => props.isOnMovement ? 'grab' : 'pointer'};
 `
 
 
 export const Draggable = React.memo((props: IDraggableProps) => {
-    const {onMouseUp,onMouseDown} = useDrag({...props, children: props.children, ...props.state});
+    const { componentProps } = useDrag();
 
     return (<StyledDraggable
-        style={props.isInMovement ? {
-            top: props.getPosition().y - 10,
-            left: props.getPosition().x - 10,
+        style={componentProps.isOnMovement ? {
+            top: componentProps.position.y - 10,
+            left: componentProps.position.x - 10,
         } : {}}
-        isInMovement={props.isInMovement}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
+        {...componentProps}
         className={"StyledDraggable"}
     >
         {props.children}
