@@ -31,7 +31,7 @@ jobs:
 
     - name: Git commit builded files
       run: |
-          git add -f ./build/* ./index.html 
+          git add -f ./build/* 
           export gitStaged=$(git diff --name-only --cached)
           if ! grep -q "/" $gitStaged ;
             then echo "Nothing to commit";
