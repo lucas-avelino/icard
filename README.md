@@ -1,5 +1,5 @@
 ## ICard
-![Publish on GH pages](https://github.com/lucas-avelino/icard/workflows/Publish%20on%20GH%20pages/badge.svg)
+![Publish on GH pages](https://github.com/lucas-avelino/icard/workflows/Publish%20on%20GH%20pages/badge.svg?branch=pre-publish)
 
 This project was made in [React](https://github.com/facebook/react) with [Typescript](https://github.com/microsoft/TypeScript) and its objective was to emulate Trello interface, for me to understand about draggable components in react and how can I use them on my projects.
 
