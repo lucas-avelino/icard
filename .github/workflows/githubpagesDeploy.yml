@@ -32,6 +32,7 @@ jobs:
     - name: Git commit builded files
       run: |
           mv build/ ../icard-build
+          mv src/assets/ ../icard-build/src/assets
           rm -rf ./*
           mv ../icard-build/* ./
           git add -f ./* 
